@@ -1,75 +1,59 @@
 package com.example.practial.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.practial.R;
-import com.example.practial.database.AppDatabase;
 import com.example.practial.entity.Product;
 
 import java.util.List;
 
+public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ViewHolder> {
 
-public class ListViewAdapter extends BaseAdapter {
-    private List<Product> listFunctions;
-    private Activity activity;
-    Context ctx;
-    AppDatabase db;
+    Context currentContext;
+    List<Product> products;
 
-    public ListViewAdapter(List<Product> listFunctions, Activity activity) {
-        this.listFunctions = listFunctions;
-        this.activity = activity;
-    }
-
-
-    @Override
-    public int getCount() {
-        return listFunctions.size();
+    public ListViewAdapter(Context currentContext, List<Product> products) {
+        this.currentContext = currentContext;
+        this.products = products;
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(currentContext).inflate(R.layout.activity_product, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Product currentProduct = products.get(position);
+        holder.idView.setText(String.valueOf(currentProduct.getId()));
+        holder.productNameView.setText(currentProduct.getName());
+        holder.productQuantityView.setText(String.valueOf(currentProduct.getQuantity()));
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public int getItemCount() {
+        return products.size();
+    }
 
-        if (convertView == null) {
-            LayoutInflater inflater = activity.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.activity_product, parent, false);
-            ViewHolder holder = new ViewHolder();
-            holder.txtName = (TextView)convertView.findViewById(R.id.txtName);
-            holder.txtQuantity = (TextView)convertView.findViewById(R.id.txtQuantity);
-            holder.btnAdd = (Button)convertView.findViewById(R.id.btnAdd);
-            holder.btnView = (Button)convertView.findViewById(R.id.btnView);
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-            convertView.setTag(holder);
+        TextView idView;
+        TextView productNameView;
+        TextView productQuantityView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            idView = itemView.findViewById(R.id.product_id);
+            productNameView = itemView.findViewById(R.id.product_name);
+            productQuantityView = itemView.findViewById(R.id.product_quantity);
         }
-        ViewHolder holder = (ViewHolder) convertView.getTag();
-        Product model = listFunctions.get(position);
-        holder.txtName.setText(model.name);
-        holder.txtQuantity.setText(String.valueOf(model.quantity));
-
-        return convertView;
-    }
-
-    static class ViewHolder {
-        public TextView txtName;
-        TextView txtQuantity;
-
-        Button btnAdd, btnView;
     }
 }
